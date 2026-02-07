@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Be My Valentine 💘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.9);
+            width: 90%;
+            max-width: 520px;
+            padding: 30px 25px 35px;
+            border-radius: 18px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.6), 0 0 40px rgba(231, 76, 60, 0.4), 0 0 60px rgba(231, 76, 60, 0.2);
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%,100% {
+                box-shadow: 0 0 20px rgba(231, 76, 60, 0.6), 0 0 40px rgba(231, 76, 60, 0.4), 0 0 60px rgba(231, 76, 60, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(231, 76, 60, 0.9), 0 0 60px rgba(231, 76, 60, 0.6), 0 0 90px rgba(231, 76, 60, 0.3);
+            }
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 10px;
+        }
+
+        #yesBtn {
+            padding: 10px 26px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 0 12px #e74c3c;
+        }
+
+        #noBtn {
+            padding: 10px 26px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background: #e0e0e0;
+            color: #555;
+            box-shadow: 0 0 8px #ccc;
+        }
+
+        .celebrate {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.7s ease forwards;
+        }
+
+            .celebrate h2 {
+                color: #e74c3c;
+                font-weight: 700;
+            }
+
+            .celebrate img {
+                width: 200px;
+                border-radius: 12px;
+                margin-top: 10px;
+                box-shadow: 0 0 20px #ff758c;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff4b6e;
+            border-radius: 50%;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .no-slot {
+            width: 90px; /* same width as NO button */
+            height: 36px; /* same height as NO button */
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card" id="card">
+
+        <h1 id="question">
+            Mr.Saqib Khan,<br>will you be my Valentine? 💕
+        </h1>
+
+        <div class="btn-row" id="btnRow">
+            <button id="yesBtn">YES</button>
+
+            <div class="no-slot" id="noSlot">
+                <button id="noBtn">NO</button>
+            </div>
+        </div>
+
+        <div class="celebrate" id="celebrate">
+            <h2>YAY! Best decision ever 😍</h2>
+            <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Love Gif">
+            <p><strong>I love you 💖</strong></p>
+        </div>
+
+    </div>
+
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script>
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const question = document.getElementById("question");
+        const btnRow = document.getElementById("btnRow");
+        const celebrate = document.getElementById("celebrate");
+        const confettiContainer = document.getElementById("confettiContainer");
+
+        let lock = false;
+
+        function moveNo() {
+            if (lock) return;
+            lock = true;
+
+            const card = document.getElementById("card");
+            const maxX = card.clientWidth - noBtn.offsetWidth;
+            const maxY = card.clientHeight - noBtn.offsetHeight;
+
+            noBtn.style.position = "absolute";
+            noBtn.style.left = Math.random() * maxX + "px";
+            noBtn.style.top = Math.random() * maxY + "px";
+
+            setTimeout(() => lock = false, 150);
+        }
+
+        document.addEventListener("mousemove", (e) => {
+            const rect = noBtn.getBoundingClientRect();
+            const dist = Math.hypot(
+                e.clientX - (rect.left + rect.width / 2),
+                e.clientY - (rect.top + rect.height / 2)
+            );
+            if (dist < 90) moveNo();
+        });
+
+        yesBtn.addEventListener("click", () => {
+            question.style.display = "none";
+            btnRow.style.display = "none";
+            celebrate.style.display = "block";
+            startConfetti();
+        });
+
+        function createConfetti() {
+            const c = document.createElement("div");
+            c.className = "confetti";
+            c.style.left = Math.random() * window.innerWidth + "px";
+            confettiContainer.appendChild(c);
+            setTimeout(() => c.remove(), 3000);
+        }
+
+        function startConfetti() {
+            for (let i = 0; i < 60; i++) {
+                setTimeout(createConfetti, i * 100);
+            }
+        }
+    </script>
+
+</body>
+</html>
